@@ -10,9 +10,9 @@ const int SIZE = 10;
 const double NEIGHBORS = 4.0;
 const int LEFT = 0;
 const int RIGHT = 9;
-const int WIDTH = 10;
+const int WIDTH = 9;
 const int DECIMAL_PRECISION = 3;
-string filename = "Inputplate.txt";
+
 
 void Initial(double hotPlate[][SIZE]) {
     for (int row = 0; row < SIZE; row++) {
@@ -32,10 +32,10 @@ void Initial(double hotPlate[][SIZE]) {
     }
 }
 
-void Print(double hot_plate[][SIZE]) {
+void Print(double hotPlate[][SIZE]) {
     for (int row = 0; row < SIZE; row++) {
         for (int col = 0; col < SIZE; col++) {
-            cout << fixed << setprecision(DECIMAL_PRECISION) << setw(WIDTH) << hot_plate[row][col];
+            cout << fixed << setprecision(DECIMAL_PRECISION) << setw(WIDTH) << hotPlate[row][col];
             if (col < SIZE - 1) {
                 cout << ",";
             }
@@ -44,18 +44,18 @@ void Print(double hot_plate[][SIZE]) {
     }
 }
 
-void FirstAverage(double hot_plate[][SIZE], double copy_hot_plate[][SIZE]) {
+void FirstAverage(double hotPlate[][SIZE], double copyHotPlate[][SIZE]) {
     double average_temp;
 
     for (int i = 1; i < SIZE - 1; i++) {
         for (int col = 1; col < SIZE - 1; col++) {
-            average_temp = (hot_plate[i - 1 ][col] + hot_plate[i + 1][col] + hot_plate[i][col - 1] + hot_plate[i][col + 1]) / NEIGHBORS;
-            copy_hot_plate[i][col] = average_temp;
+            average_temp = (hotPlate[i - 1 ][col] + hotPlate[i + 1][col] + hotPlate[i][col - 1] + hotPlate[i][col + 1]) / NEIGHBORS;
+            copyHotPlate[i][col] = average_temp;
         }
     }
 }
 
-void MyAverage(double hot_plate[][SIZE], double copy_hot_plate[][SIZE]) {
+void MyAverage(double hotPlate[][SIZE], double copyHotPlate[][SIZE]) {
 
     bool keepGoing;
     const double CHANGE = 0.1;
@@ -66,8 +66,8 @@ void MyAverage(double hot_plate[][SIZE], double copy_hot_plate[][SIZE]) {
         for (int row = 1; row < SIZE - 1; row++) {
             for (int column = 1; column < SIZE - 1; column++) {
 
-                copy_hot_plate[row][column] = (hot_plate[row + 1][column] + hot_plate[row - 1][column] + hot_plate[row][column + 1] + hot_plate[row][column - 1]) / neighbors;
-                if (abs(hot_plate[row][column] - copy_hot_plate[row][column]) > CHANGE) {
+                copyHotPlate[row][column] = (hotPlate[row + 1][column] + hotPlate[row - 1][column] + hotPlate[row][column + 1] + hotPlate[row][column - 1]) / neighbors;
+                if (abs(hotPlate[row][column] - copyHotPlate[row][column]) > CHANGE) {
                     keepGoing = true;
                 }
             }
@@ -75,19 +75,19 @@ void MyAverage(double hot_plate[][SIZE], double copy_hot_plate[][SIZE]) {
 
         for (int row = 1; row < SIZE - 1; row++) {
             for (int column = 1; column < SIZE - 1; column++) {
-                hot_plate[row][column] = copy_hot_plate[row][column];
+                hotPlate[row][column] = copyHotPlate[row][column];
             }
         }
     } while (keepGoing);
 }
 
-void SaveFile(double hot_plate[][SIZE]) {
+void SaveFile(double hotPlate[][SIZE]) {
     ofstream out;
     out.open("Hotplate.csv");
 
     for (int row = 0; row < SIZE; row++) {
         for (int col = 0; col < SIZE; col++) {
-            out << fixed << fixed << setprecision(DECIMAL_PRECISION) << setw(WIDTH) << hot_plate[row][col];
+            out << fixed << fixed << setprecision(DECIMAL_PRECISION) << setw(WIDTH) << hotPlate[row][col];
             if (col < SIZE - 1) {
                 out << ",";
             }
@@ -103,32 +103,33 @@ void SaveFile(double hot_plate[][SIZE]) {
 //}
 
 int main() {
-    double hot_plate[SIZE][SIZE];
-    double copy_hot_plate[SIZE][SIZE];
-    bool keepGoing;
+    double hotPlate[SIZE][SIZE];
+    double copyHotPlate[SIZE][SIZE];
+    //bool keepGoing;
     const double CHANGE = 0.1;
     const double neighbors = 4.0;
+    string filename = "Inputplate.txt";
 
     cout << "Hotplate simulator" << endl << endl;
     cout << "Printing the initial plate values..." << endl;
-    Initial(hot_plate);
-    Initial(copy_hot_plate);
-    Print(hot_plate);
+    Initial(hotPlate);
+    Initial(copyHotPlate);
+    Print(hotPlate);
 
     cout << endl << endl;
 
     cout << "Printing plate after one iteration..." << endl;
-    FirstAverage(hot_plate, copy_hot_plate);
-    Print(copy_hot_plate);
+    FirstAverage(hotPlate, copyHotPlate);
+    Print(copyHotPlate);
 
     cout << endl << endl;
 
     cout << "Printing final plate..." << endl;
-    MyAverage(hot_plate, copy_hot_plate);
-    Print(hot_plate);
+    MyAverage(hotPlate, copyHotPlate);
+    Print(hotPlate);
 
     cout << endl << "Writing final plate to \"Hotplate.csv\"" << endl;
-    SaveFile(hot_plate);
+    SaveFile(hotPlate);
 
 
     ifstream in;
@@ -139,16 +140,16 @@ int main() {
         for (int row = 1; row < SIZE - 1; row++) {
             for (int column = 1; column < SIZE - 1; column++) {
 
-                copy_hot_plate[row][column] = (hot_plate[row + 1][column] + hot_plate[row - 1][column] + hot_plate[row][column + 1] + hot_plate[row][column - 1]) / neighbors;
-                if (abs(hot_plate[row][column] - copy_hot_plate[row][column]) > CHANGE) {
+                copyHotPlate[row][column] = (hotPlate[row + 1][column] + hotPlate[row - 1][column] + hotPlate[row][column + 1] + hotPlate[row][column - 1]) / neighbors;
+                if (abs(hotPlate[row][column] - copyHotPlate[row][column]) > CHANGE) {
                 }
             }
             for (row= 1; row < SIZE - 1; row++) {
                 for (int column = 1; column < SIZE - 1; column++) {
-                    hot_plate[row][column] = copy_hot_plate[row][column];
+                    hotPlate[row][column] = copyHotPlate[row][column];
                 }
             }
-            Print(copy_hot_plate);
+            Print(copyHotPlate);
         }
     }
     system("pause");
